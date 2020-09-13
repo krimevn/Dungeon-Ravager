@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - FixedJoyStick
+  - JumpButton
   layers:
   - Default
   - TransparentFX
@@ -16,7 +17,7 @@ TagManager:
   - 
   - Player
   - Mobs
-  - 
+  - Ground
   - 
   - 
   - 
@@ -44,6 +45,9 @@ TagManager:
     locked: 0
   - name: Player
     uniqueID: 4252535701
+    locked: 0
+  - name: Ground
+    uniqueID: 3403372445
     locked: 0
   - name: Mobs
     uniqueID: 2155298205

@@ -4,12 +4,22 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField]
-    private float moveSpeed =5;
-    private Joystick joystick;
-    private Rigidbody2D rb;
-    private Vector2 target;
+    protected float moveSpeed =5;
     [SerializeField]
-    private bool faceRight;
+    protected float jumpForce =12;
+    protected Joystick joystick;
+    protected Rigidbody2D rb;
+    protected Vector2 target;
+    [SerializeField]
+    protected bool faceRight;
+    [SerializeField]
+    protected bool isGround;  
+    [SerializeField]
+    protected Transform standPoint;
+    [SerializeField]
+    protected LayerMask ground;
+    [SerializeField]
+    protected float heightCheck = 0.4f;
 
     
     // Start is called before the first frame update
@@ -23,7 +33,7 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-    
+        isGround = Physics2D.OverlapBox(standPoint.position,new Vector2(0.5f,heightCheck),0,ground);        
     }
     private void FixedUpdate()
     {
@@ -46,7 +56,18 @@ public class PlayerMovement : MonoBehaviour
             transform.localScale = new Vector3(transform.localScale.x*-1,transform.localScale.y,transform.localScale.z);
         }
     }
+    public void Jumping(){
+
+        if(isGround){
+            rb.velocity = Vector2.up * jumpForce; 
+        }
+    }
+    private void OnDrawGizmosSelected()
+    {   
+        Gizmos.DrawWireCube(standPoint.position,new Vector2(0.4f,heightCheck));
+    }
 
     
     
 }
+
