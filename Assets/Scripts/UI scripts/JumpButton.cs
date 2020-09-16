@@ -6,8 +6,8 @@ using UnityEngine.UI;
 public class JumpButton : MonoBehaviour
 {
     // Start is called before the first frame update
-    protected PlayerMovement playerMovement;
-    protected Button jumpButton;
+    private PlayerMovement playerMovement;
+    private Button jumpButton;
     void Start()
     {
         playerMovement =  GameObject.FindWithTag(TagHelper.Player).GetComponent<PlayerMovement>();

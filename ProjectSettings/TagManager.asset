@@ -18,7 +18,7 @@ TagManager:
   - Player
   - Mobs
   - Ground
-  - 
+  - AttackCollider
   - 
   - 
   - 
@@ -52,6 +52,9 @@ TagManager:
   - name: Mobs
     uniqueID: 2155298205
     locked: 0
-  - name: New Layer
+  - name: AttackCollider
     uniqueID: 1165565187
+    locked: 0
+  - name: New Layer
+    uniqueID: 742742019
     locked: 0

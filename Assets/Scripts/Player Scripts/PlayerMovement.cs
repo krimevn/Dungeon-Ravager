@@ -4,29 +4,30 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField]
-    protected float moveSpeed =5;
+    private float moveSpeed =5;
     [SerializeField]
-    protected float jumpForce =12;
-    protected Joystick joystick;
-    protected Rigidbody2D rb;
-    protected Vector2 target;
+    private float jumpForce =12;
+    private Joystick joystick;
+    private Rigidbody2D rb;
+    private Vector2 target;
     [SerializeField]
-    protected bool faceRight;
+    private bool faceRight;
     [SerializeField]
-    protected bool isGround;  
+    private bool isGround;  
+    private Transform standPoint;
     [SerializeField]
-    protected Transform standPoint;
+    private LayerMask ground;
     [SerializeField]
-    protected LayerMask ground;
-    [SerializeField]
-    protected float heightCheck = 0.4f;
+    private float heightCheck = 0.4f;
 
     
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         joystick = GameObject.FindWithTag(TagHelper.FixedJoyStick).GetComponent<FixedJoystick>();
+        standPoint = transform.Find(PlayerChilds.StandPoint).transform;
         rb = transform.GetComponent<Rigidbody2D>();
+        ground = LayerMask.GetMask(MaskHelper.Ground);
         faceRight = true;
     }
 
@@ -64,7 +65,10 @@ public class PlayerMovement : MonoBehaviour
     }
     private void OnDrawGizmosSelected()
     {   
-        Gizmos.DrawWireCube(standPoint.position,new Vector2(0.4f,heightCheck));
+        if(standPoint != null){
+            Gizmos.DrawWireCube(standPoint.position,new Vector2(0.5f,heightCheck));
+        }
+
     }
 
     

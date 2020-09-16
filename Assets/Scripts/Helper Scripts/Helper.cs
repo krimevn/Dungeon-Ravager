@@ -9,3 +9,11 @@ public static class TagHelper{
     public static string Player = "Player";
     public static string JumpButton = "JumpButton"; 
 }
+public static class MaskHelper{
+    public static string Mobs = "Mobs";
+    public static string Ground = "Ground";
+}
+public static class PlayerChilds{
+    public static string StandPoint = "Stand Point";
+    public static string AttackPoint = "Attack Point";
+}
