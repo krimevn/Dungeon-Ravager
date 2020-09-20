@@ -25,7 +25,7 @@ public class PlayerMovement : MonoBehaviour
     void Awake()
     {
         joystick = GameObject.FindWithTag(TagHelper.FixedJoyStick).GetComponent<FixedJoystick>();
-        standPoint = transform.Find(PlayerChilds.StandPoint).transform;
+        standPoint = transform.Find(ObjectChilds.StandPoint).transform;
         rb = transform.GetComponent<Rigidbody2D>();
         ground = LayerMask.GetMask(MaskHelper.Ground);
         faceRight = true;
@@ -50,11 +50,11 @@ public class PlayerMovement : MonoBehaviour
     void Flip(float x){
         if(faceRight && x < 0){
             faceRight = false;
-            transform.localScale = new Vector3(transform.localScale.x*-1,transform.localScale.y,transform.localScale.z);
+            transform.rotation = Quaternion.Euler(0,180,0);
         }
         if(!faceRight && x >0){
             faceRight = true;
-            transform.localScale = new Vector3(transform.localScale.x*-1,transform.localScale.y,transform.localScale.z);
+            transform.rotation = Quaternion.Euler(0,0,0);
         }
     }
     public void Jumping(){

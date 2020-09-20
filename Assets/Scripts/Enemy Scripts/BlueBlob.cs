@@ -3,21 +3,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BlueBlob : Mobs
+public class BlueBlob : Blob
 {
+
     // Start is called before the first frame update
-    private float health = 100f;
-    protected override void Start()
+        [SerializeField]
+        private float health = 60f;
+        [SerializeField]
+        private float moveSpeed = 4f;
+        protected override void Start()
     {
         base.Start();
         base.currentHealth = health;
-    }
-    public override void GetDamaged(float damaged){
-        base.GetDamaged(damaged);
+        base.MobmoveSpeed = moveSpeed;
     }
     // Update is called once per frame
-    void Update()
-    {
-        
-    }
+
+
 }

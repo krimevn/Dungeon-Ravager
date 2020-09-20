@@ -12,8 +12,14 @@ public static class TagHelper{
 public static class MaskHelper{
     public static string Mobs = "Mobs";
     public static string Ground = "Ground";
+    public static string Player = "Player";
 }
-public static class PlayerChilds{
+public static class ObjectChilds{
     public static string StandPoint = "Stand Point";
     public static string AttackPoint = "Attack Point";
+}
+public enum  mobState{
+    CHASE,
+    PATROL,
+    ATTACK
 }

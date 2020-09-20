@@ -14,7 +14,7 @@ public class PlayerAttack : MonoBehaviour
     private float attackRangeY=1.15f; 
     void Awake()
     {
-        attackTransform = transform.Find(PlayerChilds.AttackPoint).transform;
+        attackTransform = transform.Find(ObjectChilds.AttackPoint).transform;
         Debug.Log(attackTransform);
         mobs = LayerMask.GetMask(MaskHelper.Mobs);
     }
