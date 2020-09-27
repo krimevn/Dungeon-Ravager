@@ -7,14 +7,17 @@ public class Blob : Mobs
     // Start is called before the first frame update [SerializeField]
     protected float blobAttackRangeX=0.85f;
     protected float blobAttackRangeY=1f;
-    protected float blobAttackTimer = 1.5f;
+    protected float blobAttackCooldown = 1.5f;
     protected float blobAttackDistance=1.3f;
+    protected string blobName = "Blob";
     protected override void Start()
     {
         base.Start();
         base.attackSize = new Vector2(blobAttackRangeX,blobAttackRangeY);
-        base.attackReset = blobAttackTimer;
+        base.cooldownReset = blobAttackCooldown;
+        base.iniCooldown = blobAttackCooldown;
         base.attackDistance = blobAttackDistance;
+        base.mobName = blobName;
     }
     protected override void Update()
     {
