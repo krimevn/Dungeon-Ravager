@@ -5,10 +5,12 @@ using UnityEngine;
 public class Blob : Mobs
 {
     // Start is called before the first frame update [SerializeField]
+    [SerializeField]
     protected float blobAttackRangeX=0.85f;
+    [SerializeField]
     protected float blobAttackRangeY=1f;
     protected float blobAttackCooldown = 1.5f;
-    protected float blobAttackDistance=1.3f;
+    protected float blobAttackDistance=1.5f;
     protected string blobName = "Blob";
     protected override void Start()
     {
@@ -34,5 +36,12 @@ public class Blob : Mobs
     }
     public override void GetDamaged(float damaged){
         base.GetDamaged(damaged);
+    }
+    private void OnDrawGizmosSelected()
+    {
+        if(attackPoint!=null){
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireCube(attackPoint.position,base.attackSize);
+        }
     }
 }

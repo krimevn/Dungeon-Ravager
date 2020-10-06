@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -35,22 +36,32 @@ public class Mobs: MonoBehaviour
     //**********************************************
 
     //-----------Mob behaviour-------------------
+    protected RegionBoundary boundary;
+    protected float leftBound;
+    protected float rightBound;
+    protected bool hitWall;
     protected bool canRun;
     protected bool attackMode;
     [SerializeField]
     protected bool cooldown;
-    protected bool patrolMode;
+    protected bool isPatrolling;
+    protected float xPos;
+    protected Vector2 patrolPos;
     protected float distanceToPlayer;
+    protected float delay = 1.5f;
+    System.Random rndPos = new System.Random();
     //*****************************************
     protected virtual void Start()
     {
+        boundary = transform.parent.GetComponent<RegionBoundary>();
+        Debug.Log(boundary);
         mobAnimator = transform.GetComponent<Animator>();
         rb = transform.GetComponent<Rigidbody2D>();
         currentHealth = 10f;
         playerPosition =  GameObject.FindGameObjectWithTag(TagHelper.Player).transform;
         playerMask = LayerMask.GetMask(MaskHelper.Player);
         noticePlayer = false;
-        timeReset  = 2.5f;
+        timeReset  = 10f;
         lookRight = true;
         lastPosX = transform.position.x;
         #region attack setting
@@ -60,21 +71,26 @@ public class Mobs: MonoBehaviour
         #endregion
         //----------------
         #region  enemy behaviour
-        patrolMode = true;
+        isPatrolling = false ;
         canRun = true;
         attackMode = false;
         cooldown = false;
+        hitWall = false;
+        #endregion
+        #region patrol setting
+        leftBound = transform.parent.Find("LeftBound").transform.position.x;
+        rightBound = transform.parent.Find("RightBound").transform.position.x;
         #endregion
         
     }
     protected virtual void Update()
     {
-        
+        Look();
+        EnemyBehaviour();
     }
     protected virtual void FixedUpdate()
     {
-        Look();
-        EnemyBehaviour();
+
     }
     protected virtual void LateUpdate()
     {
@@ -117,11 +133,24 @@ public class Mobs: MonoBehaviour
     }
     protected void EnemyBehaviour(){
         distanceToPlayer = Vector2.Distance(transform.position,playerPosition.position);
+        if(noticePlayer){
+            if(lookRight && transform.position.x - playerPosition.position.x > 0 && !mobAnimator.GetCurrentAnimatorStateInfo(0).IsName(mobName+"_Attack")){
+                transform.rotation = Quaternion.Euler(0,180,0);
+                lookRight = false;
+            }
+            if(!lookRight && transform.position.x - playerPosition.position.x <0 && !mobAnimator.GetCurrentAnimatorStateInfo(0).IsName(mobName+"_Attack")){
+                transform.rotation = Quaternion.Euler(0,0,0);
+                lookRight = true;
+            }
+        }
+        if(!noticePlayer&&leftBound!=0&&rightBound!=0){
+            Patrol();
+        }
         if(distanceToPlayer > attackDistance){
             StopAttack();
             FollowPlayer();
         }
-        if(distanceToPlayer <= attackDistance){
+        if(distanceToPlayer <= attackDistance && noticePlayer){
             Attack();
         } 
         if(cooldown){
@@ -130,31 +159,43 @@ public class Mobs: MonoBehaviour
         }
     }
     protected void LookRotation(){
-        if(lookRight && (transform.position.x - playerPosition.position.x) > 0 && !mobAnimator.GetCurrentAnimatorStateInfo(0).IsName(mobName+"_Attack")){
+        if(lookRight && (-transform.position.x + lastPosX) > 0.05 && !mobAnimator.GetCurrentAnimatorStateInfo(0).IsName(mobName+"_Attack")){
             transform.rotation = Quaternion.Euler(0,180,0);
             lookRight = false;
         }
-        if(!lookRight && (transform.position.x - playerPosition.position.x) < 0 && !mobAnimator.GetCurrentAnimatorStateInfo(0).IsName(mobName+"_Attack")){
+        if(!lookRight && (-transform.position.x + lastPosX) < -0.05 && !mobAnimator.GetCurrentAnimatorStateInfo(0).IsName(mobName+"_Attack")){
             transform.rotation = Quaternion.Euler(0,0,0);
             lookRight = true;
         }
         
-        // lastPosX = transform.position.x;
+        lastPosX = transform.position.x;
         
     }
     protected virtual void FollowPlayer(){
         // mobAnimator.SetBool("canMove",true);
-        Debug.Log(mobAnimator.GetCurrentAnimatorStateInfo(0).IsName(mobName+"_Attack"));
         if(!mobAnimator.GetCurrentAnimatorStateInfo(0).IsName(mobName+"_Attack") && noticePlayer){
-            targetPos = new Vector3(playerPosition.position.x, transform.position.y, transform.position.z);
-            transform.position = Vector3.MoveTowards(transform.position, targetPos, Time.fixedDeltaTime* MobmoveSpeed);
+            
+            targetPos = new Vector3(playerPosition.position.x, rb.velocity.y, transform.position.z);
+            transform.position += transform.TransformDirection(Vector3.right)*MobmoveSpeed*Time.deltaTime; ;
         }
         //transform.position += transform.TransformDirection(Vector3.right)*MobmoveSpeed*Time.deltaTime;                
     }
     protected virtual void Patrol(){
-
+        if(!isPatrolling){
+            isPatrolling = true;
+            xPos = 1;
+            patrolPos = new Vector2(rightBound,transform.position.y);
+        }
+        if(isPatrolling&&canRun){
+            transform.position += transform.TransformDirection(Vector2.right)*Time.fixedDeltaTime*MobmoveSpeed;
+        }
+        if(Vector2.Distance(transform.position,patrolPos)>=0&&Vector2.Distance(transform.position,patrolPos)<=0.01){
+        }
     }
-    #region setting up attacking part
+    protected virtual void newDestinationPatrol(){
+        
+    }
+    #region setting up attacking
     protected virtual void Attack(){
         // Collider2D collider = Physics2D.BoxCast(attackPoint.position, )
         
@@ -180,11 +221,18 @@ public class Mobs: MonoBehaviour
         mobAnimator.SetBool("Attack",false);
     }
     #endregion
+    protected void OnTriggerEnter2D(Collider2D other)
+    {
+        if(other.tag == "Boundary"&&!noticePlayer){
+            transform.right = transform.right * -1;
+        }
+    }
     private void OnDrawGizmosSelected()
     {
         Vector3 direction = transform.TransformDirection(Vector3.right) * lookDistance;
         Gizmos.DrawRay(transform.position,direction);
         if(attackPoint!=null){
+            Gizmos.color = Color.red;
             Gizmos.DrawWireCube(attackPoint.position,new Vector2(MobAttackRangeX,MobAttackRangeY));
         }
     }

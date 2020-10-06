@@ -7,6 +7,7 @@ TagManager:
   - FixedJoyStick
   - JumpButton
   - AttackPoint
+  - Boundary
   layers:
   - Default
   - TransparentFX

@@ -31,6 +31,7 @@ public class PlayerAttack : MonoBehaviour
         Collider2D[] colliders =  Physics2D.OverlapBoxAll(attackTransform.position,new Vector2(attackRangeX,attackRangeY),0,mobs);
         foreach(Collider2D collider in colliders){
             collider.GetComponent<Mobs>().GetDamaged(5f);
+            Debug.Log(collider.GetComponent<BoxCollider2D>().size);
         }
         playerAnim.SetBool("Attack",false);
     }
