@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System.Diagnostics;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -20,6 +21,7 @@ public class Blob : Mobs
         base.iniCooldown = blobAttackCooldown;
         base.attackDistance = blobAttackDistance;
         base.mobName = blobName;
+        
     }
     protected override void Update()
     {
@@ -36,6 +38,10 @@ public class Blob : Mobs
     }
     public override void GetDamaged(float damaged){
         base.GetDamaged(damaged);
+        base.mobAnimator.SetTrigger("Stagger");
+    }
+    public void ResetStaggerAnim(){
+        //base.mobAnimator.ResetTrigger("Stagger");
     }
     private void OnDrawGizmosSelected()
     {

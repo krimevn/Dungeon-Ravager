@@ -15,4 +15,8 @@ public class BloodSplash : MonoBehaviour
     {
         
     }
+    void Destroy()
+    {
+        Destroy(gameObject);
+    }
 }

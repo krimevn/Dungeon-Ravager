@@ -3,7 +3,13 @@ guid: 5534564f57620fd4c960686a0933a996
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - BloodPreb: {instanceID: 0}
+  - BloodPrebPos: {instanceID: 0}
+  - coinPreb: {fileID: 3169777187222121905, guid: 1767663cfecf340438df1eb79d6b719c,
+      type: 3}
+  - gemPreb: {fileID: 5325537909615993288, guid: 30613bc13ef0d5a46840939f46acde93,
+      type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

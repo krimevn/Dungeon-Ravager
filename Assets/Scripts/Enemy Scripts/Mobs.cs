@@ -37,6 +37,7 @@ public class Mobs: MonoBehaviour
 
     //-----------Mob behaviour-------------------
     protected RegionBoundary boundary;
+    protected bool canFollow;
     protected float leftBound;
     protected float rightBound;
     protected bool hitWall;
@@ -49,8 +50,13 @@ public class Mobs: MonoBehaviour
     protected Vector2 patrolPos;
     protected float distanceToPlayer;
     protected float delay = 1.5f;
-    System.Random rndPos = new System.Random();
+    public GameObject BloodPreb;
+    public Transform BloodPrebPos;
     //*****************************************
+    //----------------------Item Drop-----------------
+    public GameObject coinPreb;
+    public GameObject gemPreb;
+    //**********************************************
     protected virtual void Start()
     {
         boundary = transform.parent.GetComponent<RegionBoundary>();
@@ -61,7 +67,7 @@ public class Mobs: MonoBehaviour
         playerPosition =  GameObject.FindGameObjectWithTag(TagHelper.Player).transform;
         playerMask = LayerMask.GetMask(MaskHelper.Player);
         noticePlayer = false;
-        timeReset  = 10f;
+        timeReset  = 5f;
         lookRight = true;
         lastPosX = transform.position.x;
         #region attack setting
@@ -76,21 +82,26 @@ public class Mobs: MonoBehaviour
         attackMode = false;
         cooldown = false;
         hitWall = false;
+        canFollow = false;
         #endregion
         #region patrol setting
         leftBound = transform.parent.Find("LeftBound").transform.position.x;
         rightBound = transform.parent.Find("RightBound").transform.position.x;
         #endregion
+        #region Tresure Drop
+        coinPreb = Resources.Load<GameObject>("Coin");
+        gemPreb = Resources.Load<GameObject>("Gem");
+        #endregion
         
     }
     protected virtual void Update()
     {
-        Look();
-        EnemyBehaviour();
+        
     }
     protected virtual void FixedUpdate()
     {
-
+        Look();
+        EnemyBehaviour();
     }
     protected virtual void LateUpdate()
     {
@@ -98,6 +109,7 @@ public class Mobs: MonoBehaviour
     }
     public virtual void GetDamaged(float damaged){
         currentHealth =  currentHealth - damaged;
+        Instantiate(BloodPreb, BloodPrebPos,false);
         Debug.Log(currentHealth);
         if(currentHealth <= 0)
         {
@@ -105,7 +117,11 @@ public class Mobs: MonoBehaviour
         }
     }
     protected virtual void Die(){
+        DropTreasure();
         Destroy(gameObject);
+    }
+    protected virtual void DropTreasure(){
+        
     }
     protected virtual void Look(){
         Vector3 direction = transform.TransformDirection(Vector3.right) * lookDistance;
@@ -115,7 +131,7 @@ public class Mobs: MonoBehaviour
         //Flip the enemy
         LookRotation();
         //
-        if(player!= null){
+        if(player!= null && canFollow){
             text.text = player.name;
             sightTimer = timeReset;
             noticePlayer = true;
@@ -132,8 +148,16 @@ public class Mobs: MonoBehaviour
         }
     }
     protected void EnemyBehaviour(){
+        if (playerPosition.position.x > leftBound && playerPosition.position.x < rightBound)
+        {
+            canFollow = true;
+        }
+        else
+        {
+            canFollow = false;
+        }
         distanceToPlayer = Vector2.Distance(transform.position,playerPosition.position);
-        if(noticePlayer){
+        if(canFollow){
             if(lookRight && transform.position.x - playerPosition.position.x > 0 && !mobAnimator.GetCurrentAnimatorStateInfo(0).IsName(mobName+"_Attack")){
                 transform.rotation = Quaternion.Euler(0,180,0);
                 lookRight = false;
@@ -143,14 +167,14 @@ public class Mobs: MonoBehaviour
                 lookRight = true;
             }
         }
-        if(!noticePlayer&&leftBound!=0&&rightBound!=0){
+        if(leftBound!=0&&rightBound!=0&&!canFollow){
             Patrol();
         }
-        if(distanceToPlayer > attackDistance){
+        if(distanceToPlayer > attackDistance && canFollow){
             StopAttack();
             FollowPlayer();
         }
-        if(distanceToPlayer <= attackDistance && noticePlayer){
+        if(distanceToPlayer <= attackDistance && canFollow){
             Attack();
         } 
         if(cooldown){
@@ -173,7 +197,8 @@ public class Mobs: MonoBehaviour
     }
     protected virtual void FollowPlayer(){
         // mobAnimator.SetBool("canMove",true);
-        if(!mobAnimator.GetCurrentAnimatorStateInfo(0).IsName(mobName+"_Attack") && noticePlayer){
+        
+        if(!mobAnimator.GetCurrentAnimatorStateInfo(0).IsName(mobName+"_Attack")  && canFollow){
             
             targetPos = new Vector3(playerPosition.position.x, rb.velocity.y, transform.position.z);
             transform.position += transform.TransformDirection(Vector3.right)*MobmoveSpeed*Time.deltaTime; ;
@@ -181,15 +206,9 @@ public class Mobs: MonoBehaviour
         //transform.position += transform.TransformDirection(Vector3.right)*MobmoveSpeed*Time.deltaTime;                
     }
     protected virtual void Patrol(){
-        if(!isPatrolling){
-            isPatrolling = true;
-            xPos = 1;
-            patrolPos = new Vector2(rightBound,transform.position.y);
-        }
-        if(isPatrolling&&canRun){
-            transform.position += transform.TransformDirection(Vector2.right)*Time.fixedDeltaTime*MobmoveSpeed;
-        }
-        if(Vector2.Distance(transform.position,patrolPos)>=0&&Vector2.Distance(transform.position,patrolPos)<=0.01){
+
+        transform.position += transform.TransformDirection(Vector2.right) * Time.fixedDeltaTime * MobmoveSpeed;
+        if (Vector2.Distance(transform.position,patrolPos)>=0&&Vector2.Distance(transform.position,patrolPos)<=0.01){
         }
     }
     protected virtual void newDestinationPatrol(){
@@ -223,7 +242,7 @@ public class Mobs: MonoBehaviour
     #endregion
     protected void OnTriggerEnter2D(Collider2D other)
     {
-        if(other.tag == "Boundary"&&!noticePlayer){
+        if(other.tag == "Boundary"){
             transform.right = transform.right * -1;
         }
     }

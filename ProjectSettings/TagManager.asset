@@ -8,6 +8,10 @@ TagManager:
   - JumpButton
   - AttackPoint
   - Boundary
+  - AttackButton
+  - PlayerMagneticZone
+  - Treasury
+  - GoldConsumeZone
   layers:
   - Default
   - TransparentFX
@@ -21,7 +25,7 @@ TagManager:
   - Mobs
   - Ground
   - AttackCollider
-  - 
+  - ItemDrop
   - 
   - 
   - 
