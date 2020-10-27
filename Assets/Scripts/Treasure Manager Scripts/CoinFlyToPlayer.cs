@@ -34,10 +34,10 @@ public class CoinFlyToPlayer : MonoBehaviour
     }
     public void BeConsume(){
         if(gameObject.name == "Coin"||gameObject.name=="Coin(Clone)"){
-            player.treasury += 1;
+            Player.treasury += 1;
         }
         if(gameObject.name == "Gem"||gameObject.name=="Gem(Clone)"){
-            player.treasury += 5;
+            Player.treasury += 5;
         }
         Debug.Log(gameObject.name);
         Destroy(gameObject);

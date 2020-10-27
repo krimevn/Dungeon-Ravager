@@ -6,17 +6,18 @@ public class Player : MonoBehaviour
 {
     // Start is called before the first frame update
     [SerializeField]
-    public float playerMaxHealth;
+    static public float playerMaxHealth;
     [SerializeField]
     public float playerLevel;
     [SerializeField]
     public float playerExperience;
     [SerializeField]
-    public float playerAttack;
+    static public float playerAttack;
     [SerializeField]
     private float playerCurrentHealth;
     [SerializeField]
-    public float treasury;
+    static public float treasury;
+    static public int gem;
     void Start()
     {
         playerCurrentHealth = playerMaxHealth;

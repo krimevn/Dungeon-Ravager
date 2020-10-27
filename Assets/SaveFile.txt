@@ -1,1 +1,1 @@
-{"playerMaxHealthDefault":100.0,"playerAttackDefault":5.0,"playerMaxHealth":100.0,"playerLevel":0.0,"playerExperience":0.0,"playerAttack":5.0,"treasury":1050.0}
+{"playerMaxHealthDefault":100.0,"playerAttackDefault":5.0,"playerMaxHealth":100.0,"playerLevel":0.0,"playerExperience":0.0,"playerAttack":5.0,"treasury":1000.0,"gem":15}

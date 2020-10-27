@@ -8,6 +8,7 @@ using UnityEngine;
 public class PlayerAttack : MonoBehaviour
 {   
     private Animator playerAnim;
+    private PlayerMovement playerMovement;
     private Transform attackTransform;
     private LayerMask mobs;
     [SerializeField]
@@ -21,16 +22,22 @@ public class PlayerAttack : MonoBehaviour
     {
         playerAnim = transform.GetComponent<Animator>();
         attackTransform = transform.Find(ObjectChilds.AttackPoint).transform;
-        Debug.Log(attackTransform);
         mobs = LayerMask.GetMask(MaskHelper.Mobs);
+        playerMovement = transform.GetComponent<PlayerMovement>();
         attackButton = GameObject.FindGameObjectWithTag("AttackButton").GetComponent<AttackButton>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(attackButton.noOfPush==1){
+        if(playerMovement.isGround){
+            playerAnim.SetBool("FlyAttack",false);
+        }
+        if(attackButton.noOfPush==1&&playerMovement.isGround){
             playerAnim.SetBool("Attack1",true);
+        }
+        if(attackButton.noOfPush==1&&!playerMovement.isGround){
+            playerAnim.SetBool("FlyAttack",true);
         }
     }
     public void Attack(){
@@ -61,6 +68,10 @@ public class PlayerAttack : MonoBehaviour
         playerAnim.SetBool("Attack1",false);
         playerAnim.SetBool("Attack2",false);
         playerAnim.SetBool("Attack3",false);
+        attackButton.noOfPush = 0;
+    }
+    public void ReturnFlyAttack(){
+        playerAnim.SetBool("FlyAttack",false);
         attackButton.noOfPush = 0;
     }
     public void clampValue2(){

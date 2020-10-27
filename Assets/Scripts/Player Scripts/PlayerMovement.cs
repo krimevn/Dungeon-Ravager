@@ -13,7 +13,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     private bool faceRight;
     [SerializeField]
-    private bool isGround;  
+    public bool isGround; 
+    public bool moveAble; 
+    public bool jumpable;
     private Transform standPoint;
     [SerializeField]
     private LayerMask ground;
@@ -29,6 +31,7 @@ public class PlayerMovement : MonoBehaviour
         rb = transform.GetComponent<Rigidbody2D>();
         ground = LayerMask.GetMask(MaskHelper.Ground);
         faceRight = true;
+        moveAble = true;
     }
 
     // Update is called once per frame
@@ -38,11 +41,14 @@ public class PlayerMovement : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        Moving();
+        target = new Vector2(joystick.Horizontal,0);
+        Flip(joystick.Horizontal);
+        if(moveAble){
+            Moving();
+        }
     }
     void Moving(){
-        target = new Vector2(joystick.Horizontal,0);
-        Flip(target.x);
+        
         target.Normalize();
         target = target*moveSpeed;
         rb.velocity =  new Vector2(target.x,rb.velocity.y);
@@ -59,9 +65,21 @@ public class PlayerMovement : MonoBehaviour
     }
     public void Jumping(){
 
-        if(isGround){
+        if(isGround&&jumpable){
             rb.velocity = Vector2.up * jumpForce; 
         }
+    }
+    public void DisableMovement(){
+        moveAble = false;
+        jumpable =false;
+        rb.velocity = Vector2.zero;
+        rb.gravityScale=0;
+    }
+    public void EnableMovement(){
+        moveAble = true;
+        jumpable = true;
+        rb.velocity = Vector2.zero;
+        rb.gravityScale=3;
     }
     private void OnDrawGizmosSelected()
     {   

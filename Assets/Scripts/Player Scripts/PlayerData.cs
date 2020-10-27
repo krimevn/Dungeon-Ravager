@@ -12,16 +12,19 @@ public class PlayerData
     public float playerExperience;
     public float playerAttack;
     public float treasury;
+    public int gem;
     //Constructor for creating a new save
     public PlayerData(){
         playerMaxHealth = playerMaxHealthDefault;
         playerAttack = playerAttackDefault;
+        gem = 15;
         treasury = 1000;
     }
-    public PlayerData(Player player){
-        playerMaxHealth = player.playerMaxHealth;
-        playerAttack = player.playerAttack;
-        treasury = player.treasury;
+    public PlayerData(bool initial){
+        playerMaxHealth = Player.playerMaxHealth;
+        playerAttack = Player.playerAttack;
+        treasury = Player.treasury;
+        gem = Player.gem;
     }
 
     
