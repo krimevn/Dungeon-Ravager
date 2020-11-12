@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
+    private Animator playerAnim;
     [SerializeField]
     private float moveSpeed =5;
     [SerializeField]
@@ -26,6 +27,7 @@ public class PlayerMovement : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
+        playerAnim = transform.GetComponent<Animator>();
         joystick = GameObject.FindWithTag(TagHelper.FixedJoyStick).GetComponent<FixedJoystick>();
         standPoint = transform.Find(ObjectChilds.StandPoint).transform;
         rb = transform.GetComponent<Rigidbody2D>();
@@ -45,6 +47,14 @@ public class PlayerMovement : MonoBehaviour
         Flip(joystick.Horizontal);
         if(moveAble){
             Moving();
+        }
+        if(rb.velocity != Vector2.zero)
+        {
+            playerAnim.SetBool("Running", true);
+        }
+        else
+        {
+            playerAnim.SetBool("Running", false);
         }
     }
     void Moving(){

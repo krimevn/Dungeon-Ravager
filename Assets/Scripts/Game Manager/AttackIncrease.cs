@@ -5,14 +5,14 @@ using UnityEngine.UI;
 
 public class AttackIncrease : MonoBehaviour
 {
-    public Button healthIncrease;
+    public Button attackIncrease;
     void Start()
     {
-        healthIncrease = transform.GetComponent<Button>();
-        healthIncrease.onClick.AddListener(IncreasHealth);
+        attackIncrease = transform.GetComponent<Button>();
+        attackIncrease.onClick.AddListener(IncreasAttack);
     }
 
-    public void IncreasHealth(){
-        Player.playerMaxHealth += 50f;
+    public void IncreasAttack(){
+        Player.playerAttack += 5f;
     }
 }

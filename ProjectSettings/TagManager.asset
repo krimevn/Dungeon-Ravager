@@ -12,6 +12,7 @@ TagManager:
   - PlayerMagneticZone
   - Treasury
   - GoldConsumeZone
+  - UIHome
   layers:
   - Default
   - TransparentFX
